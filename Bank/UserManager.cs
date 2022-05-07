@@ -102,7 +102,6 @@ namespace Bank
 
                     users.Add(newUser);
                 }
-                
             }
             catch (System.IO.FileNotFoundException)
             {
