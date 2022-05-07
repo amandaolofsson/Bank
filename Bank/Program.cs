@@ -16,8 +16,8 @@ namespace Bank
             um.Load();
             while (true)
             {
-                Session s = new Session();
-                s.Start(um);
+                ISession session = SessionManager.Create(um);
+                session.Start();
 
                 Console.ReadLine();
             }
