@@ -31,7 +31,7 @@ namespace Bank
             }
             else if (user.Type == UserType.Admin)
             {
-                return new AdminSession(user);
+                return new AdminSession(user, um);
             }
 
             return null;

@@ -11,6 +11,8 @@ namespace Bank
     {
         List<User> users = new List<User>();
 
+        int nextUserID;
+
         public User GetByName(string username)
         {
             foreach (User u in users)
@@ -24,6 +26,35 @@ namespace Bank
             return null;
         }
 
+        public int GetNextUserID()
+        {
+            return nextUserID++;
+        }
+
+        public IEnumerable<Customer> GetCustomers()
+        {
+            return users.Where(c=> c.Type==UserType.Customer).Cast<Customer>();
+        }
+
+        public void Add(User user)
+        {
+            users.Add(user);
+            Save();
+        }
+
+        public bool Delete(int id)
+        {
+            User user = users.FirstOrDefault(c=> c.ID == id);
+
+            if(user != null)
+            {
+                users.Remove(user);
+                Save();
+                return true;
+            }
+            return false;
+        }
+
         public void Save()
         {
             XmlDocument xmlDoc = new XmlDocument();
@@ -33,6 +64,9 @@ namespace Bank
             xmlDoc.InsertBefore(xmlDeclaration, root);
 
             XmlElement usersElement = xmlDoc.CreateElement("", "users", "");
+            XmlAttribute nextUserIDAttribute = xmlDoc.CreateAttribute("", "nextuserid", "");
+            nextUserIDAttribute.Value = nextUserID.ToString();
+            usersElement.Attributes.Append(nextUserIDAttribute);
 
             foreach (User user in users)
             {
@@ -77,6 +111,7 @@ namespace Bank
                 xmlDoc.Load("users.xml");
                 users.Clear();
                 XmlNodeList userList = xmlDoc.SelectNodes("users/user");
+                nextUserID = int.Parse(xmlDoc.SelectSingleNode("users").Attributes["nextuserid"].Value);
 
                 foreach (XmlNode u in userList)
                 {
@@ -108,6 +143,7 @@ namespace Bank
                 Console.WriteLine("***Initializing System***");
                 Admin admin = new Admin("Admin", 1);
                 users.Add(admin);
+                nextUserID = 2;
                 Save();
             }
         }

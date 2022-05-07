@@ -18,8 +18,6 @@ namespace Bank
             {
                 ISession session = SessionManager.Create(um);
                 session.Start();
-
-                Console.ReadLine();
             }
         }
     }

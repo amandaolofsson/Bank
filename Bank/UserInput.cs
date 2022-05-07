@@ -33,7 +33,25 @@ namespace Bank
         {
             Console.Write(text);
             string value = Console.ReadLine();
+
             return value;
+        }
+
+        public static int PromptInt(string text)
+        {
+            while (true)
+            {
+                string s = Prompt(text);
+
+                try
+                {
+                    return int.Parse(s);
+                }
+                catch
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+            }
         }
     }
 }
