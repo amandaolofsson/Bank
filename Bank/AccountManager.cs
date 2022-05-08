@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Bank
 {
-    enum AccountOperationStatus {Success, AccountBalanceNotZero, AccountNotFound, AmountMustBePositive };
+    enum AccountOperationStatus {Success, AccountBalanceNotZero, AccountNotFound, AmountMustBePositive, NotEnoughMoney };
 
     class AccountManager
     {
@@ -90,8 +90,38 @@ namespace Bank
                 return AccountOperationStatus.AccountNotFound;
             }
 
+            if(amount > account.Balance)
+            {
+                return AccountOperationStatus.NotEnoughMoney;
+            }
+
             account.Balance -= amount;
             Save();
+            return AccountOperationStatus.Success;
+        }
+
+        public AccountOperationStatus Transfer(int fromAccountId, int toAccountId, int amount, int customerId)
+        {
+            Account toAccount = accounts.FirstOrDefault(a => a.Id == toAccountId);
+
+            if(toAccount == null)
+            {
+                return AccountOperationStatus.AccountNotFound;
+            }
+
+            //BEGIN TRANSACTION
+            AccountOperationStatus status = WithdrawMoney(fromAccountId, amount, customerId);
+
+            if(status != AccountOperationStatus.Success)
+            {
+                //ROLLBACK TRANSACTION
+                return status;
+            }
+
+            toAccount.Balance += amount;
+            Save();
+
+            //COMMIT TRANSACTION
             return AccountOperationStatus.Success;
         }
 

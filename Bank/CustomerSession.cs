@@ -105,7 +105,7 @@ namespace Bank
             switch (status)
             {
                 case AccountOperationStatus.Success:
-                    Console.WriteLine("Withdraw successfull");
+                    Console.WriteLine("Insert successfull");
                     break;
                 case AccountOperationStatus.AccountNotFound:
                     Console.WriteLine("Account not found");
@@ -134,7 +134,19 @@ namespace Bank
                 case AccountOperationStatus.AmountMustBePositive:
                     Console.WriteLine("Amount must be positive");
                     break;
+                case AccountOperationStatus.NotEnoughMoney:
+                    Console.WriteLine("Not enough money on account");
+                    break;
             }
+        }
+
+        void Transfer()
+        {
+            int fromAccountId = UserInput.PromptInt("Enter from accountId: ");
+            int toAccountId = UserInput.PromptInt("Enter to accountId: ");
+            int amount = UserInput.PromptInt("Enter amount: ");
+
+
         }
     }
 }
