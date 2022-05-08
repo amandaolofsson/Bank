@@ -154,6 +154,28 @@ namespace Bank
                 customerIDElement.InnerText = account.CustomerId.ToString();
                 accountElement.AppendChild(customerIDElement);
 
+                XmlElement transactionsElement = xmlDoc.CreateElement("", "transactions", "");
+
+                foreach(Transaction transaction in account.Transactions)
+                {
+                    XmlElement transactionElement = xmlDoc.CreateElement("", "transaction", "");
+
+                    XmlAttribute typeAttr = xmlDoc.CreateAttribute("", "type", "");
+                    typeAttr.Value = transaction.Type.ToString();
+                    transactionElement.Attributes.Append(typeAttr);
+
+                    XmlElement dateElement = xmlDoc.CreateElement("", "date", "");
+                    dateElement.InnerText = transaction.Date;
+                    transactionElement.AppendChild(dateElement);
+
+                    XmlElement amountElement = xmlDoc.CreateElement("", "amount", "");
+                    amountElement.InnerText = transaction.Amount.ToString();
+                    transactionElement.AppendChild(amountElement);
+
+                    transactionsElement.AppendChild(transactionElement);
+                }
+
+                accountElement.AppendChild(transactionsElement);
                 accountsElement.AppendChild(accountElement);
             }
 
@@ -164,6 +186,7 @@ namespace Bank
         public void Load()
         {
             XmlDocument xmlDoc = new XmlDocument();
+
             try
             {
                 xmlDoc.Load("accounts.xml");
@@ -176,8 +199,19 @@ namespace Bank
                     int accountID = int.Parse(u.Attributes["id"].Value);
                     int balance = int.Parse(u.SelectSingleNode("balance").InnerText);
                     int customerId = int.Parse(u.SelectSingleNode("customerid").InnerText);
+
+                    Account account = new Account(balance, accountID, customerId);
+
+                    foreach (XmlNode t in u.SelectNodes("transactions/transaction"))
+                    {
+                        string date = t.SelectSingleNode("date").InnerText;
+                        int amount = int.Parse(t.SelectSingleNode("amount").InnerText);
+                        TransactionType type = (TransactionType)Enum.Parse(typeof(TransactionType), t.Attributes["type"].Value);
+
+                        account.Transactions.Add();
+                    }
                     
-                    accounts.Add(new Account(balance, accountID, customerId));
+                    accounts.Add(account);
                 }
             }
             catch (System.IO.FileNotFoundException)

@@ -12,7 +12,7 @@ namespace Bank
         int id;
         int customerId;
 
-
+        List<Transaction> transactions = new List<Transaction>();
 
         public Account(int balance, int id, int customerId)
         {
@@ -47,6 +47,14 @@ namespace Bank
             get
             {
                 return customerId;
+            }
+        }
+        
+        public List<Transaction> Transactions
+        {
+            get
+            {
+                return transactions;
             }
         }
     }
