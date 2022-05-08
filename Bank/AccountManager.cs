@@ -29,6 +29,13 @@ namespace Bank
             Save();
         }
 
+        public Account GetAccountForCustomer(int accountId, int customerId)
+        {
+            Account account = accounts.FirstOrDefault(c => c.Id == accountId && c.CustomerId == customerId);
+
+            return account;
+        }
+
         public AccountOperationStatus Delete(int id, int customerId)
         {
             Account account = accounts.FirstOrDefault(c => c.Id == id);

@@ -27,12 +27,13 @@ namespace Bank
 [C] Create new account
 [D] Delete account
 [V] View balance
+[A] View account
 [P] Put money in
 [W] Withdraw money
 [T] Transfer money
 [L] Log out", user.Name);
 
-                string option = UserInput.Get(new string[] { "C", "V", "D", "L", "P", "W", "T", "c", "v", "d", "l", "p", "w", "t" }).ToLower();
+                string option = UserInput.Get(new string[] { "C", "V", "D", "L", "P", "W", "T", "A", "c", "v", "d", "l", "p", "w", "t", "a" }).ToLower();
 
                 switch (option)
                 {
@@ -43,7 +44,10 @@ namespace Bank
                         DeleteAccount();
                         break;
                     case "v":
-                        ViewAccounts();
+                        ViewBalance();
+                        break;
+                    case "a":
+                        ViewAccount();
                         break;
                     case "p":
                         Insert();
@@ -52,6 +56,7 @@ namespace Bank
                         Withdraw();
                         break;
                     case "t":
+                        Transfer();
                         break;
                     case "l":
                         return;
@@ -87,11 +92,31 @@ namespace Bank
             }
         }
 
-        void ViewAccounts()
+        void ViewBalance()
         {
             foreach (Account a in accountManager.GetAccountsForCustomer(user.ID))
             {
                 Console.WriteLine("Id: {0}  Balance: {1}", a.Id, a.Balance);
+            }
+        }
+
+        void ViewAccount()
+        {
+            int accountId = UserInput.PromptInt("Enter accountId: ");
+
+            Account account = accountManager.GetAccountForCustomer(accountId, user.ID);
+
+            if(account == null)
+            {
+                Console.WriteLine("Account not found");
+                return;
+            }
+
+            Console.WriteLine("Id: {0}  Balance: {1}", account.Id, account.Balance);
+
+            foreach (Transaction t in account.Transactions)
+            {
+                Console.WriteLine("Date: {0}    Type: {1}   Amount: {2}", t.Date, t.Type, t.Amount);
             }
         }
 
@@ -146,7 +171,23 @@ namespace Bank
             int toAccountId = UserInput.PromptInt("Enter to accountId: ");
             int amount = UserInput.PromptInt("Enter amount: ");
 
+            AccountOperationStatus status = accountManager.Transfer(fromAccountId, toAccountId, amount, user.ID);
 
+            switch (status)
+            {
+                case AccountOperationStatus.Success:
+                    Console.WriteLine("Transfer successfull");
+                    break;
+                case AccountOperationStatus.AccountNotFound:
+                    Console.WriteLine("Account not found");
+                    break;
+                case AccountOperationStatus.AmountMustBePositive:
+                    Console.WriteLine("Amount must be positive");
+                    break;
+                case AccountOperationStatus.NotEnoughMoney:
+                    Console.WriteLine("Not enough money on account");
+                    break;
+            }
         }
     }
 }
