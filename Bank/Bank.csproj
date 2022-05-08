@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
+    <Compile Include="AccountManager.cs" />
     <Compile Include="Admin.cs" />
     <Compile Include="AdminSession.cs" />
     <Compile Include="Customer.cs" />

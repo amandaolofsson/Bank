@@ -9,5 +9,38 @@ namespace Bank
     class Account
     {
         int balance;
+        int id;
+        int customerId;
+
+        public Account(int balance, int id, int customerId)
+        {
+            this.balance = balance;
+            this.id = id;
+            this.customerId = customerId;
+        }
+
+        public int Balance
+        {
+            get
+            {
+                return balance;
+            }
+        }
+
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+        }
+
+        public int CustomerId
+        {
+            get
+            {
+                return customerId;
+            }
+        }
     }
 }
