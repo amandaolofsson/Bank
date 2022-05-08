@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Bank
 {
-    enum AccountOperationStatus {Success, AccountBalanceNotZero, AccountNotFound };
+    enum AccountOperationStatus {Success, AccountBalanceNotZero, AccountNotFound, AmountMustBePositive };
 
     class AccountManager
     {
@@ -18,18 +18,28 @@ namespace Bank
             return nextAccountID++;
         }
 
+        public IEnumerable<Account> GetAccountsForCustomer(int customerId)
+        {
+            return accounts.Where(a => a.CustomerId == customerId).Cast<Account>();
+        }
+
         public void Add(Account account)
         {
             accounts.Add(account);
             Save();
         }
 
-        public AccountOperationStatus Delete(int id)
+        public AccountOperationStatus Delete(int id, int customerId)
         {
             Account account = accounts.FirstOrDefault(c => c.Id == id);
 
             if (account != null)
             {
+                if(account.CustomerId != customerId)
+                {
+                    return AccountOperationStatus.AccountNotFound;
+                }
+
                 if(account.Balance != 0)
                 {
                     return AccountOperationStatus.AccountBalanceNotZero;
@@ -40,6 +50,49 @@ namespace Bank
                 return AccountOperationStatus.Success;
             }
             return AccountOperationStatus.AccountNotFound;
+        }
+
+        public AccountOperationStatus InsertMoney(int accountId, int amount)
+        {
+            if(amount < 1)
+            {
+                return AccountOperationStatus.AmountMustBePositive;
+            }
+
+            Account account = accounts.FirstOrDefault(a => a.Id == accountId);
+
+            if(account == null)
+            {
+                return AccountOperationStatus.AccountNotFound;
+            }
+
+            account.Balance += amount;
+            Save();
+            return AccountOperationStatus.Success;
+        }
+
+        public AccountOperationStatus WithdrawMoney(int accountId, int amount, int customerId)
+        {
+            if (amount < 1)
+            {
+                return AccountOperationStatus.AmountMustBePositive;
+            }
+
+            Account account = accounts.FirstOrDefault(a => a.Id == accountId);
+
+            if (account == null)
+            {
+                return AccountOperationStatus.AccountNotFound;
+            }
+
+            if (account.CustomerId != customerId)
+            {
+                return AccountOperationStatus.AccountNotFound;
+            }
+
+            account.Balance -= amount;
+            Save();
+            return AccountOperationStatus.Success;
         }
 
         public void Save()
@@ -99,7 +152,7 @@ namespace Bank
             }
             catch (System.IO.FileNotFoundException)
             {
-
+                nextAccountID = 1;
             }
         }
     }

@@ -25,6 +25,11 @@ namespace Bank
             {
                 return balance;
             }
+
+            set
+            {
+                balance = value;
+            }
         }
 
         public int Id

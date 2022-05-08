@@ -13,7 +13,7 @@ namespace Bank
 
     class SessionManager
     {
-        public static ISession Create(UserManager um)
+        public static ISession Create(UserManager um, AccountManager am)
         {
             Console.WriteLine("Welcome to the bank. Please log in");
             User user = null;
@@ -27,7 +27,7 @@ namespace Bank
 
             if(user.Type == UserType.Customer)
             {
-                return new CustomerSession(user);
+                return new CustomerSession(user, um, am);
             }
             else if (user.Type == UserType.Admin)
             {

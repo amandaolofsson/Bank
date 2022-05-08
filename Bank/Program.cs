@@ -13,10 +13,12 @@ namespace Bank
         static void Main(string[] args)
         {
             UserManager um = new UserManager();
+            AccountManager am = new AccountManager();
             um.Load();
+            am.Load();
             while (true)
             {
-                ISession session = SessionManager.Create(um);
+                ISession session = SessionManager.Create(um, am);
                 session.Start();
             }
         }
