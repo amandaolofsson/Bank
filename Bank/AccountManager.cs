@@ -66,6 +66,8 @@ namespace Bank
                 return AccountOperationStatus.AccountNotFound;
             }
 
+            account.Transactions.Add(new Transaction(DateTime.Now.ToString(), TransactionType.Insert, amount));
+
             account.Balance += amount;
             Save();
             return AccountOperationStatus.Success;
@@ -95,6 +97,8 @@ namespace Bank
                 return AccountOperationStatus.NotEnoughMoney;
             }
 
+            account.Transactions.Add(new Transaction(DateTime.Now.ToString(), TransactionType.Withdraw, amount));
+
             account.Balance -= amount;
             Save();
             return AccountOperationStatus.Success;
@@ -117,6 +121,8 @@ namespace Bank
                 //ROLLBACK TRANSACTION
                 return status;
             }
+
+            toAccount.Transactions.Add(new Transaction(DateTime.Now.ToString(), TransactionType.Insert, amount));
 
             toAccount.Balance += amount;
             Save();
@@ -208,7 +214,7 @@ namespace Bank
                         int amount = int.Parse(t.SelectSingleNode("amount").InnerText);
                         TransactionType type = (TransactionType)Enum.Parse(typeof(TransactionType), t.Attributes["type"].Value);
 
-                        account.Transactions.Add();
+                        account.Transactions.Add(new Transaction(date, type, amount));
                     }
                     
                     accounts.Add(account);
