@@ -34,7 +34,7 @@ namespace Bank
         }
 
         //Sends message and Enum type to Client
-        public void Send(string message, ServerMessageEnum type = ServerMessageEnum.Response)
+        public void Send(string message, ServerMessageEnum type = ServerMessageEnum.Response, bool newLine = true)
         {
             string responseType = "R";
 
@@ -49,7 +49,14 @@ namespace Bank
             }
 
             //Adds Enum to message string and adds EOM-symbol
-            message = responseType + message + "¤";
+            message = responseType + message;
+
+            if (newLine)
+            {
+                message += "\r\n";
+            }
+
+            message += "¤";
 
             Byte[] bSend = System.Text.Encoding.UTF8.GetBytes(message);
             socket.Send(bSend);
@@ -87,7 +94,8 @@ namespace Bank
         //Ask the user for input
         public string Prompt(string text)
         {
-            Send(text);
+            Send(text, ServerMessageEnum.Response, false);
+
             string value = Receive();
 
             return value;

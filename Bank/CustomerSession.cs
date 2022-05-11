@@ -84,10 +84,10 @@ namespace Bank
                     communication.SendText("Account successfully removed");
                     break;
                 case AccountOperationStatus.AccountNotFound:
-                    Console.WriteLine("Account not found");
+                    communication.SendText("Account not found");
                     break;
                 case AccountOperationStatus.AccountBalanceNotZero:
-                    Console.WriteLine("Money still left in account");
+                    communication.SendText("Money still left in account");
                     break;
                 
             }
@@ -97,7 +97,7 @@ namespace Bank
         {
             foreach (Account a in accountManager.GetAccountsForCustomer(user.ID))
             {
-                Console.WriteLine("Id: {0}  Balance: {1}", a.Id, a.Balance);
+                communication.SendText("Id: {0}  Balance: {1}", a.Id, a.Balance);
             }
         }
 

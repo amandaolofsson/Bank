@@ -31,8 +31,11 @@ namespace Bank
                 Socket socket = tcpListener.AcceptSocket();
                 Console.WriteLine("Connected to: {0}", socket.RemoteEndPoint);
 
-                ISession session = SessionManager.Create(socket, um, am);
-                session.Start();
+                while (true)
+                {
+                    ISession session = SessionManager.Create(socket, um, am);
+                    session.Start();
+                }
             }
         }
     }

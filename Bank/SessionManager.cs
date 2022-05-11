@@ -23,8 +23,7 @@ namespace Bank
 
             while(user == null)
             {
-                communication.Send("Name: ");
-                string username = communication.Receive();
+                string username = communication.Prompt("Name: ");
 
                 user = um.GetByName(username);
             }
