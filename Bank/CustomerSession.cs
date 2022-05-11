@@ -84,10 +84,10 @@ namespace Bank
                     communication.SendText("Account successfully removed");
                     break;
                 case AccountOperationStatus.AccountNotFound:
-                    communication.SendText("Account not found");
+                    Console.WriteLine("Account not found");
                     break;
                 case AccountOperationStatus.AccountBalanceNotZero:
-                    communication.SendText("Money still left in account");
+                    Console.WriteLine("Money still left in account");
                     break;
                 
             }
@@ -103,90 +103,90 @@ namespace Bank
 
         void ViewAccount()
         {
-            int accountId = UserInput.PromptInt("Enter accountId: ");
+            int accountId = communication.PromptInt("Enter accountId: ");
 
             Account account = accountManager.GetAccountForCustomer(accountId, user.ID);
 
             if(account == null)
             {
-                Console.WriteLine("Account not found");
+                communication.SendText("Account not found");
                 return;
             }
 
-            Console.WriteLine("Id: {0}  Balance: {1}", account.Id, account.Balance);
+            communication.SendText("Id: {0}  Balance: {1}", account.Id, account.Balance);
 
             foreach (Transaction t in account.Transactions)
             {
-                Console.WriteLine("Date: {0}    Type: {1}   Amount: {2}", t.Date, t.Type, t.Amount);
+                communication.SendText("Date: {0}    Type: {1}   Amount: {2}", t.Date, t.Type, t.Amount);
             }
         }
 
         void Insert()
         {
-            int accountId = UserInput.PromptInt("Enter accountId: ");
-            int amount = UserInput.PromptInt("Enter amount: ");
+            int accountId = communication.PromptInt("Enter accountId: ");
+            int amount = communication.PromptInt("Enter amount: ");
 
             AccountOperationStatus status = accountManager.InsertMoney(accountId, amount);
 
             switch (status)
             {
                 case AccountOperationStatus.Success:
-                    Console.WriteLine("Insert successfull");
+                    communication.SendText("Insert successfull");
                     break;
                 case AccountOperationStatus.AccountNotFound:
-                    Console.WriteLine("Account not found");
+                    communication.SendText("Account not found");
                     break;
                 case AccountOperationStatus.AmountMustBePositive:
-                    Console.WriteLine("Amount must be positive");
+                    communication.SendText("Amount must be positive");
                     break;
             }
         }
 
         void Withdraw()
         {
-            int accountId = UserInput.PromptInt("Enter accountId: ");
-            int amount = UserInput.PromptInt("Enter amount: ");
+            int accountId = communication.PromptInt("Enter accountId: ");
+            int amount = communication.PromptInt("Enter amount: ");
 
             AccountOperationStatus status = accountManager.WithdrawMoney(accountId, amount, user.ID);
 
             switch (status)
             {
                 case AccountOperationStatus.Success:
-                    Console.WriteLine("Withdraw successfull");
+                    communication.SendText("Withdraw successfull");
                     break;
                 case AccountOperationStatus.AccountNotFound:
-                    Console.WriteLine("Account not found");
+                    communication.SendText("Account not found");
                     break;
                 case AccountOperationStatus.AmountMustBePositive:
-                    Console.WriteLine("Amount must be positive");
+                    communication.SendText("Amount must be positive");
                     break;
                 case AccountOperationStatus.NotEnoughMoney:
-                    Console.WriteLine("Not enough money on account");
+                    communication.SendText("Not enough money on account");
                     break;
             }
         }
 
         void Transfer()
         {
-            int fromAccountId = UserInput.PromptInt("Enter from accountId: ");
-            int toAccountId = UserInput.PromptInt("Enter to accountId: ");
-            int amount = UserInput.PromptInt("Enter amount: ");
+            int fromAccountId = communication.PromptInt("Enter from accountId: ");
+            int toAccountId = communication.PromptInt("Enter to accountId: ");
+            int amount = communication.PromptInt("Enter amount: ");
 
             AccountOperationStatus status = accountManager.Transfer(fromAccountId, toAccountId, amount, user.ID);
 
             switch (status)
             {
                 case AccountOperationStatus.Success:
-                    Console.WriteLine("Transfer successfull");
+                    communication.SendText("Transfer successfull");
                     break;
                 case AccountOperationStatus.AccountNotFound:
-                    Console.WriteLine("Account not found");
+                    communication.SendText("Account not found");
                     break;
                 case AccountOperationStatus.AmountMustBePositive:
-                    Console.WriteLine("Amount must be positive");
+                    communication.SendText("Amount must be positive");
                     break;
                 case AccountOperationStatus.NotEnoughMoney:
-                    Console.WriteLine("Not enough money on account");
+                    communication.SendText("Not enough money on account");
                     break;
             }
         }
