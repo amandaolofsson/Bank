@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,25 +14,28 @@ namespace Bank
 
     class SessionManager
     {
-        public static ISession Create(UserManager um, AccountManager am)
+        public static ISession Create(Socket socket, UserManager um, AccountManager am)
         {
-            Console.WriteLine("Welcome to the bank. Please log in");
+            Communication communication = new Communication(socket);
+
+            communication.Send("Welcome to the bank. Please log in", ServerMessageEnum.Text);
             User user = null;
 
             while(user == null)
             {
-                string username = UserInput.Prompt("Name: ");
+                communication.Send("Name: ");
+                string username = communication.Receive();
 
                 user = um.GetByName(username);
             }
 
             if(user.Type == UserType.Customer)
             {
-                return new CustomerSession(user, um, am);
+                return new CustomerSession(communication, user, um, am);
             }
             else if (user.Type == UserType.Admin)
             {
-                return new AdminSession(user, um);
+                return new AdminSession(communication, user, um);
             }
 
             return null;

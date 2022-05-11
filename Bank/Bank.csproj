@@ -47,14 +47,15 @@
     <Compile Include="AccountManager.cs" />
     <Compile Include="Admin.cs" />
     <Compile Include="AdminSession.cs" />
+    <Compile Include="Communication.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerSession.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionBase.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="UserInput.cs" />
     <Compile Include="UserManager.cs" />
   </ItemGroup>
   <ItemGroup>

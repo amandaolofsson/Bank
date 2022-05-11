@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Bank
 {
-    class CustomerSession : ISession
+    class CustomerSession : SessionBase
     {
         User user;
         UserManager userManager;
         AccountManager accountManager;
 
-        public CustomerSession(User user, UserManager um, AccountManager am)
+        public CustomerSession(Communication communication, User user, UserManager um, AccountManager am) : base(communication)
         {
             this.user = user;
             this.userManager = um;
             this.accountManager = am;
         }
 
-        public void Start()
+        public override void Start()
         {
             while (true)
             {
-                Console.WriteLine(@"Hello {0}. What would you like to do?
+                communication.Send(@"Hello {0}. What would you like to do?
 [C] Create new account
 [D] Delete account
 [V] View balance
@@ -33,7 +34,7 @@ namespace Bank
 [T] Transfer money
 [L] Log out", user.Name);
 
-                string option = UserInput.Get(new string[] { "C", "V", "D", "L", "P", "W", "T", "A", "c", "v", "d", "l", "p", "w", "t", "a" }).ToLower();
+                string option = communication.Get(new string[] { "C", "V", "D", "L", "P", "W", "T", "A", "c", "v", "d", "l", "p", "w", "t", "a" }).ToLower();
 
                 switch (option)
                 {
@@ -68,25 +69,25 @@ namespace Bank
         {
             Account account = new Account(0, accountManager.GetNextAccountID(), user.ID);
             accountManager.Add(account);
-            Console.WriteLine("Account created. Id: {0} Balance: {1}", account.Id, account.Balance);
+            communication.SendText("Account created. Id: {0} Balance: {1}", account.Id, account.Balance);
         }
 
         void DeleteAccount()
         {
-            int accountId = UserInput.PromptInt("Enter accountId: ");
+            int accountId = communication.PromptInt("Enter accountId: ");
 
             AccountOperationStatus status = accountManager.Delete(accountId, user.ID);
 
             switch (status)
             {
                 case AccountOperationStatus.Success:
-                    Console.WriteLine("Account successfully removed");
+                    communication.SendText("Account successfully removed");
                     break;
                 case AccountOperationStatus.AccountNotFound:
-                    Console.WriteLine("Account not found");
+                    communication.SendText("Account not found");
                     break;
                 case AccountOperationStatus.AccountBalanceNotZero:
-                    Console.WriteLine("Money still left in account");
+                    communication.SendText("Money still left in account");
                     break;
                 
             }

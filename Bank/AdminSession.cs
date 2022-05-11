@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Bank
 {
-    class AdminSession : ISession
+    class AdminSession : SessionBase
     {
         User user;
         UserManager userManager;
 
-        public AdminSession(User user, UserManager userManager)
+        public AdminSession(Communication communication, User user, UserManager userManager) : base(communication)
         {
             this.user = user;
             this.userManager = userManager;
         }
 
-        public void Start()
+        public override void Start()
         {
             while (true)
             {
-                Console.WriteLine(@"Hello {0}. What would you like to do?
+                communication.Send(ServerMessageEnum.Response, @"Hello {0}. What would you like to do?
 [C] Create customer 
 [V] View customers
 [D] Delete customers 
 [L] Log out", user.Name);
 
-                string option = UserInput.Get(new string[] { "C", "V", "D", "L", "c", "v", "d", "l" }).ToLower();
+                string option = communication.Get(new string[] { "C", "V", "D", "L", "c", "v", "d", "l" }).ToLower();
 
                 switch (option)
                 {
@@ -48,32 +49,33 @@ namespace Bank
 
         void CreateCustomer()
         {
-            string name = UserInput.Prompt("Customer name: ");
-            string ssn = UserInput.Prompt("Social security number: ");
+            string name = communication.Prompt("Customer name: ");
+            string ssn = communication.Prompt("Social security number: ");
 
             Customer customer = new Customer(ssn, name, userManager.GetNextUserID());
             userManager.Add(customer);
-            Console.WriteLine("Customer created. Id: {0}", customer.ID);
+            communication.SendText("Customer created. Id: {0}", customer.ID);
         }
 
         void ViewCustomers()
         {
             foreach (Customer c in userManager.GetCustomers())
             {
-                Console.WriteLine("Id: {0}  Name: {1}   SSN: {2}", c.ID, c.Name, c.SSN);
+                communication.SendText("Id: {0}  Name: {1}   SSN: {2}", c.ID, c.Name, c.SSN);
             }
         }
 
         void DeleteCustomer()
         {
-            int userId = UserInput.PromptInt("Enter userId: ");
+            int userId = communication.PromptInt("Enter userId: ");
+
             if (userManager.Delete(userId))
             {
-                Console.WriteLine("Removed!");
+                communication.SendText("Removed!");
             }
             else
             {
-                Console.WriteLine("User not found");
+                communication.SendText("User not found");
             }
         }
 }
