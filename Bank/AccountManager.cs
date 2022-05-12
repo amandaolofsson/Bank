@@ -9,7 +9,7 @@ namespace Bank
 
     class AccountManager
     {
-        List<Account> accounts = new List<Account>();
+        MyList<Account> accounts = new MyList<Account>();
 
         int nextAccountID;
 

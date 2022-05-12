@@ -9,7 +9,7 @@ namespace Bank
 {
     class UserManager
     {
-        List<User> users = new List<User>();
+        MyList<User> users = new MyList<User>();
 
         int nextUserID;
 

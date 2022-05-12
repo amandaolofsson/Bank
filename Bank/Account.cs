@@ -57,5 +57,10 @@ namespace Bank
                 return transactions;
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format("Id: {0}  Balance: {1}", this.Id, this.Balance);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Bank
         {
             while (true)
             {
-                communication.Send(ServerMessageEnum.Response, @"Hello {0}. What would you like to do?
+                communication.SendClear(@"Hello {0}. What would you like to do?
 [C] Create customer 
 [V] View customers
 [D] Delete customers 

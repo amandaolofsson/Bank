@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace Bank
 {
     enum ServerMessageEnum { Response, Text};
+
+    class ClientDisconnectException : Exception { }
+
     class Communication
     {
         Socket socket;
@@ -26,6 +29,11 @@ namespace Bank
         public void Send(string format, params object[] args)
         {
             Send(String.Format(format, args));
+        }
+
+        public void SendClear(string format, params object[] args)
+        {
+            Send(String.Format(format, args), ServerMessageEnum.Response, true);
         }
 
         public void Send(ServerMessageEnum type, string format, params object[] args)
@@ -48,7 +56,9 @@ namespace Bank
                     break;
             }
 
-            //Adds Enum to message string and adds EOM-symbol
+            //string clearScreenCommand = clearScreen ? "C" : "0";
+
+            //Adds Enum to message string
             message = responseType + message;
 
             if (newLine)
@@ -56,6 +66,7 @@ namespace Bank
                 message += "\r\n";
             }
 
+            //Adds EOM-symbol
             message += "¤";
 
             Byte[] bSend = System.Text.Encoding.UTF8.GetBytes(message);
@@ -64,10 +75,16 @@ namespace Bank
 
         public string Receive()
         {
-            byte[] bRead = new byte[256];
-            int bReadSize = socket.Receive(bRead);
-
-            return System.Text.Encoding.UTF8.GetString(bRead, 0, bReadSize);
+            try
+            {
+                byte[] bRead = new byte[256];
+                int bReadSize = socket.Receive(bRead);
+                return System.Text.Encoding.UTF8.GetString(bRead, 0, bReadSize);
+            }
+            catch (SocketException)
+            {
+                throw new ClientDisconnectException();
+            }
         }
 
         //Get input from user and only return valid entries
@@ -113,7 +130,7 @@ namespace Bank
                 }
                 catch
                 {
-                    Send("Invalid input. Try again");
+                    SendText("Invalid input. Try again");
                 }
             }
         }

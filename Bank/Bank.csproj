@@ -50,6 +50,7 @@
     <Compile Include="Communication.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerSession.cs" />
+    <Compile Include="MyList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionBase.cs" />

@@ -24,7 +24,7 @@ namespace Bank
         {
             while (true)
             {
-                communication.Send(@"Hello {0}. What would you like to do?
+                communication.SendClear(@"Hello {0}. What would you like to do?
 [C] Create new account
 [D] Delete account
 [V] View balance
@@ -97,7 +97,7 @@ namespace Bank
         {
             foreach (Account a in accountManager.GetAccountsForCustomer(user.ID))
             {
-                communication.SendText("Id: {0}  Balance: {1}", a.Id, a.Balance);
+                communication.SendText(a.ToString());
             }
         }
 

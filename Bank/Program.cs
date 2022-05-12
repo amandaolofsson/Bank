@@ -24,17 +24,25 @@ namespace Bank
             tcpListener = new TcpListener(iP, 800);
             tcpListener.Start();
 
-            Console.WriteLine("The bank system 2.X is up and running, and waiting for connection..");
+            Console.WriteLine("The bank system 2.X is up and running");
 
             while (true)
             {
-                Socket socket = tcpListener.AcceptSocket();
-                Console.WriteLine("Connected to: {0}", socket.RemoteEndPoint);
-
-                while (true)
+                try
                 {
-                    ISession session = SessionManager.Create(socket, um, am);
-                    session.Start();
+                    Console.WriteLine("Waiting for connection...");
+                    Socket socket = tcpListener.AcceptSocket();
+                    Console.WriteLine("Connected to: {0}", socket.RemoteEndPoint);
+
+                    while (true)
+                    {
+                        ISession session = SessionManager.Create(socket, um, am);
+                        session.Start();
+                    }
+                }
+                catch (ClientDisconnectException)
+                {
+                    Console.WriteLine("Client disconnected");
                 }
             }
         }
