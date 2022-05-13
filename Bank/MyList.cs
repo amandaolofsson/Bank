@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bank
 {
+    //This is required class when implementing IEnumerable
     class MyListEnum<T> : IEnumerator<T>
     {
         T[] items;
@@ -56,11 +57,10 @@ namespace Bank
         }
     }
 
+    //To gain access to functions like foreach, Where() etc.
     class MyList <T>  : IEnumerable<T>
     {
         T[] items = new T[0];
-
-        
 
         public void Add(T newItem)
         {
@@ -78,13 +78,16 @@ namespace Bank
 
         public void Remove(T item)
         {
+            //There is nothing to remove
             if(items.Length == 0)
             {
                 return;
             }
 
             T[] temp = new T[items.Length - 1];
-
+            
+            //When index is found, next object should get that index
+            //Need a second variable to differ between index and objects
             int x = 0;
 
             for (int i = 0; i < items.Length; i++)

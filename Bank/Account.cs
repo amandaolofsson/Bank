@@ -12,7 +12,7 @@ namespace Bank
         int id;
         int customerId;
 
-        List<Transaction> transactions = new List<Transaction>();
+        MyList<Transaction> transactions = new MyList<Transaction>();
 
         public Account(int balance, int id, int customerId)
         {
@@ -50,7 +50,7 @@ namespace Bank
             }
         }
         
-        public List<Transaction> Transactions
+        public MyList<Transaction> Transactions
         {
             get
             {

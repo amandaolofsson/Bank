@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bank
 {
-    enum ServerMessageEnum { Response, Text};
+    enum ServerMessageEnum {Response, Text};
 
     class ClientDisconnectException : Exception { }
 
@@ -19,26 +19,17 @@ namespace Bank
         {
             this.socket = socket;
         }
-
         
+        //In case server only sends text, doesn't expect response back
         public void SendText(string format, params object[] args)
         {
             Send(String.Format(format, args), ServerMessageEnum.Text);
         }
 
+        //To being able to send meny as formated
         public void Send(string format, params object[] args)
         {
             Send(String.Format(format, args));
-        }
-
-        public void SendClear(string format, params object[] args)
-        {
-            Send(String.Format(format, args), ServerMessageEnum.Response, true);
-        }
-
-        public void Send(ServerMessageEnum type, string format, params object[] args)
-        {
-            Send(String.Format(format, args), type);
         }
 
         //Sends message and Enum type to Client
@@ -55,8 +46,6 @@ namespace Bank
                     responseType = "T";
                     break;
             }
-
-            //string clearScreenCommand = clearScreen ? "C" : "0";
 
             //Adds Enum to message string
             message = responseType + message;
@@ -118,6 +107,7 @@ namespace Bank
             return value;
         }
 
+        //Converts string to int
         public int PromptInt(string text)
         {
             while (true)

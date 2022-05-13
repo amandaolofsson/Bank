@@ -12,9 +12,11 @@ namespace Bank
         MyList<User> users = new MyList<User>();
 
         int nextUserID;
-
+        
         public User GetByName(string username)
         {
+            //Checks if username is saved in Xml-file
+            //This is for checking if there is an existing customer with name username, and if so, lets client log on
             foreach (User u in users)
             {
                 if (u.Name == username)
@@ -30,9 +32,11 @@ namespace Bank
         {
             return nextUserID++;
         }
-
+        
+        //This is to send client a list of only customers, excluding admins
         public IEnumerable<Customer> GetCustomers()
         {
+            //To separate Customer from list of User
             return users.Where(c=> c.Type==UserType.Customer).Cast<Customer>();
         }
 
@@ -44,14 +48,17 @@ namespace Bank
 
         public bool Delete(int id)
         {
+            //Checks if input id match id of customer
             User user = users.FirstOrDefault(c=> c.ID == id);
 
+            //If so, delete customer
             if(user != null)
             {
                 users.Remove(user);
                 Save();
                 return true;
             }
+
             return false;
         }
 
@@ -106,6 +113,7 @@ namespace Bank
         public void Load()
         {
             XmlDocument xmlDoc = new XmlDocument();
+
             try
             {
                 xmlDoc.Load("users.xml");
@@ -138,6 +146,7 @@ namespace Bank
                     users.Add(newUser);
                 }
             }
+            //In case no Xml-file has been created
             catch (System.IO.FileNotFoundException)
             {
                 Console.WriteLine("***Initializing System***");

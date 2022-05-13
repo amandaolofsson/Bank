@@ -8,6 +8,7 @@ using System.Xml;
 namespace Bank
 {
     enum UserType { Admin, Customer}
+
     abstract class User
     {
         protected string name;

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Bank
 {
-    enum TransactionType { Insert, Withdraw };
-
+    enum TransactionType {Insert, Withdraw };
+    
+    //Transaction is a change of balance in an account
     class Transaction
     {
         string date;

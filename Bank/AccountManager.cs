@@ -18,8 +18,10 @@ namespace Bank
             return nextAccountID++;
         }
 
+        //This is to present client with list of only clients own accounts
         public IEnumerable<Account> GetAccountsForCustomer(int customerId)
         {
+            //To separate clients own account(s) from list of Account
             return accounts.Where(a => a.CustomerId == customerId).Cast<Account>();
         }
 
@@ -29,8 +31,10 @@ namespace Bank
             Save();
         }
 
+        //Unlike GetAccountsForCustomer, only returns a single account
         public Account GetAccountForCustomer(int accountId, int customerId)
         {
+            //Checks if input accountId exists and if the account belongs to client
             Account account = accounts.FirstOrDefault(c => c.Id == accountId && c.CustomerId == customerId);
 
             return account;
@@ -38,15 +42,18 @@ namespace Bank
 
         public AccountOperationStatus Delete(int id, int customerId)
         {
+            //Checks if account exists
             Account account = accounts.FirstOrDefault(c => c.Id == id);
 
             if (account != null)
             {
+                //Cannot delete another customers account
                 if(account.CustomerId != customerId)
                 {
                     return AccountOperationStatus.AccountNotFound;
                 }
 
+                //Cannot delete while money still in account
                 if(account.Balance != 0)
                 {
                     return AccountOperationStatus.AccountBalanceNotZero;
@@ -61,6 +68,7 @@ namespace Bank
 
         public AccountOperationStatus InsertMoney(int accountId, int amount)
         {
+            //Cannot insert an amount 0 or lower
             if(amount < 1)
             {
                 return AccountOperationStatus.AmountMustBePositive;
@@ -73,6 +81,8 @@ namespace Bank
                 return AccountOperationStatus.AccountNotFound;
             }
 
+            //Adds to transaction list
+            //This is to keeping track of transactions regarding accounts
             account.Transactions.Add(new Transaction(DateTime.Now.ToString(), TransactionType.Insert, amount));
 
             account.Balance += amount;
@@ -82,11 +92,13 @@ namespace Bank
 
         public AccountOperationStatus WithdrawMoney(int accountId, int amount, int customerId)
         {
+            //Cannot withdraw a negative amount
             if (amount < 1)
             {
                 return AccountOperationStatus.AmountMustBePositive;
             }
 
+            //Checks if account exists
             Account account = accounts.FirstOrDefault(a => a.Id == accountId);
 
             if (account == null)
@@ -94,16 +106,19 @@ namespace Bank
                 return AccountOperationStatus.AccountNotFound;
             }
 
+            //Cannot withdraw money from another customers account
             if (account.CustomerId != customerId)
             {
                 return AccountOperationStatus.AccountNotFound;
             }
-
+            
             if(amount > account.Balance)
             {
                 return AccountOperationStatus.NotEnoughMoney;
             }
 
+            //Adds to transaction list
+            //This is to keeping track of transactions regarding accounts
             account.Transactions.Add(new Transaction(DateTime.Now.ToString(), TransactionType.Withdraw, amount));
 
             account.Balance -= amount;
@@ -113,6 +128,7 @@ namespace Bank
 
         public AccountOperationStatus Transfer(int fromAccountId, int toAccountId, int amount, int customerId)
         {
+            //Checks if account exists
             Account toAccount = accounts.FirstOrDefault(a => a.Id == toAccountId);
 
             if(toAccount == null)
@@ -123,12 +139,15 @@ namespace Bank
             //BEGIN TRANSACTION
             AccountOperationStatus status = WithdrawMoney(fromAccountId, amount, customerId);
 
-            if(status != AccountOperationStatus.Success)
+            //In case withdraw was not successfull, cancel transfer
+            if (status != AccountOperationStatus.Success)
             {
                 //ROLLBACK TRANSACTION
                 return status;
             }
 
+            //Adds to transaction list
+            //This is to keeping track of transactions regarding accounts
             toAccount.Transactions.Add(new Transaction(DateTime.Now.ToString(), TransactionType.Insert, amount));
 
             toAccount.Balance += amount;

@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace Bank
 {
+    interface ISession
+    {
+        void Start();
+    }
+
     abstract class SessionBase : ISession
     {
         protected Communication communication;
@@ -17,7 +22,5 @@ namespace Bank
         }
 
         public abstract void Start();
-
-        
     }
 }

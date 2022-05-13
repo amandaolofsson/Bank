@@ -24,7 +24,7 @@ namespace Bank
         {
             while (true)
             {
-                communication.SendClear(@"Hello {0}. What would you like to do?
+                communication.Send(@"Hello {0}. What would you like to do?
 [C] Create new account
 [D] Delete account
 [V] View balance
